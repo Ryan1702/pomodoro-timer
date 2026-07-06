@@ -181,7 +181,7 @@ body {
 .btn-pin {
   position: absolute;
   top: 6px;
-  right: 48px;
+  right: -34px;
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -214,7 +214,7 @@ body {
 .btn-settings {
   position: absolute;
   top: 6px;
-  right: 12px;
+  right: 0px;
   width: 30px;
   height: 30px;
   border-radius: 50%;
