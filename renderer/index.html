@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>番茄钟</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- 窗口拖拽区 -->
+    <div class="drag-bar">
+      <!-- 齿轮设置按钮 -->
+      <button class="btn btn-settings" id="btnSettings" title="设置">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        </svg>
+      </button>
+      <!-- 置顶按钮 -->
+      <button class="btn btn-pin" id="btnPin" title="置顶窗口">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="17" x2="12" y2="22" />
+          <line x1="5" y1="17" x2="19" y2="17" />
+          <polyline points="5 17 5 9 12 2 19 9 19 17" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- 阶段标签 -->
+    <div class="phase-label" id="phaseLabel">专注</div>
+
+    <!-- 环形进度条 + 倒计时 -->
+    <div class="timer-ring">
+      <svg viewBox="0 0 200 200" class="ring-svg">
+        <!-- 背景圆环 -->
+        <circle
+          cx="100" cy="100" r="88"
+          fill="none"
+          stroke="var(--ring-bg)"
+          stroke-width="8"
+        />
+        <!-- 进度圆环 -->
+        <circle
+          id="progressRing"
+          cx="100" cy="100" r="88"
+          fill="none"
+          stroke="var(--ring-color)"
+          stroke-width="8"
+          stroke-linecap="round"
+          stroke-dasharray="552.92"
+          stroke-dashoffset="0"
+          transform="rotate(-90 100 100)"
+        />
+      </svg>
+      <div class="timer-text" id="timerText">25:00</div>
+    </div>
+
+    <!-- 控制按钮 -->
+    <div class="controls">
+      <button class="btn btn-primary" id="btnStartPause" title="开始">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="6,4 20,12 6,20" id="iconPlay" />
+          <g id="iconPause" style="display:none">
+            <rect x="6" y="4" width="4" height="16" rx="1" />
+            <rect x="14" y="4" width="4" height="16" rx="1" />
+          </g>
+        </svg>
+      </button>
+      <button class="btn btn-secondary" id="btnSkip" title="跳过">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="6,4 18,12 6,20" />
+          <line x1="20" y1="4" x2="20" y2="20" />
+        </svg>
+      </button>
+      <button class="btn btn-secondary" id="btnReset" title="重置">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M1 4v6h6" />
+          <path d="M3.5 15a9 9 0 1 0 2.1-9.3L1 10" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- 番茄计数 -->
+    <div class="tomato-count" id="tomatoCount">
+      <span class="tomato-icon">🍅</span>
+      <span id="countText">×0</span>
+      <span class="session-hint" id="sessionHint">第 1 轮</span>
+    </div>
+
+    <!-- 设置面板 -->
+    <div class="settings-panel hidden" id="settingsPanel">
+      <div class="settings-row">
+        <label for="inputFocus">专注（分钟）</label>
+        <input type="number" id="inputFocus" min="1" max="120" value="25" />
+      </div>
+      <div class="settings-row">
+        <label for="inputShortBreak">短休息（分钟）</label>
+        <input type="number" id="inputShortBreak" min="1" max="120" value="5" />
+      </div>
+      <div class="settings-row">
+        <label for="inputLongBreak">长休息（分钟）</label>
+        <input type="number" id="inputLongBreak" min="1" max="120" value="15" />
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,298 @@
+/* ====== CSS 变量 / 主题 ====== */
+:root {
+  --ring-bg: #e8e8e8;
+  --ring-color: #e74c3c;
+  --text-primary: #2c3e50;
+  --text-secondary: #7f8c8d;
+  --bg: #fafafa;
+  --btn-primary-bg: #e74c3c;
+  --btn-primary-hover: #c0392b;
+  --btn-secondary-bg: #ecf0f1;
+  --btn-secondary-hover: #dfe4e6;
+  --btn-text: #fff;
+  --btn-secondary-text: #2c3e50;
+  --radius: 12px;
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC",
+    "Microsoft YaHei", sans-serif;
+}
+
+/* 长休息阶段颜色 */
+body.long-break {
+  --ring-color: #3498db;
+  --btn-primary-bg: #3498db;
+  --btn-primary-hover: #2980b9;
+}
+
+/* 短休息阶段颜色 */
+body.short-break {
+  --ring-color: #27ae60;
+  --btn-primary-bg: #27ae60;
+  --btn-primary-hover: #219a52;
+}
+
+/* ====== 全局 ====== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-app-region: no-drag;
+  overflow: hidden;
+  transition: background 0.4s ease;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0 40px;
+}
+
+/* ====== 拖拽区 ====== */
+.drag-bar {
+  width: 100%;
+  height: 32px;
+  -webkit-app-region: drag;
+  flex-shrink: 0;
+  position: relative;
+}
+
+/* ====== 阶段标签 ====== */
+.phase-label {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ring-color);
+  letter-spacing: 2px;
+  transition: color 0.4s ease;
+  margin-top: 8px;
+  margin-bottom: 20px;
+}
+
+/* ====== 环形进度条 ====== */
+.timer-ring {
+  position: relative;
+  width: 220px;
+  height: 220px;
+  margin-bottom: 28px;
+}
+
+.ring-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.timer-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48px;
+  font-weight: 200;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 2px;
+  color: var(--text-primary);
+}
+
+/* ====== 控制按钮 ====== */
+.controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.btn {
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
+  -webkit-app-region: no-drag;
+}
+
+.btn:active {
+  transform: scale(0.94);
+}
+
+.btn-primary {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--btn-primary-bg);
+  color: var(--btn-text);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.btn-primary:hover {
+  background: var(--btn-primary-hover);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.24);
+}
+
+.btn-secondary {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+}
+
+.btn-secondary:hover {
+  background: var(--btn-secondary-hover);
+}
+
+/* ====== 番茄计数 ====== */
+.tomato-count {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+
+.tomato-icon {
+  font-size: 18px;
+}
+
+.session-hint {
+  margin-left: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+/* ====== SVG 进度环 stroke-dasharray ====== */
+/* r=88 → 周长 = 2π×88 ≈ 552.92 */
+
+/* ====== 置顶按钮 ====== */
+.btn-pin {
+  position: absolute;
+  top: 6px;
+  right: 48px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+  z-index: 10;
+}
+
+.btn-pin:hover {
+  color: var(--text-primary);
+  background: var(--btn-secondary-bg);
+}
+
+.btn-pin:active {
+  transform: scale(0.9);
+}
+
+/* 置顶激活态 */
+.btn-pin.is-pinned {
+  color: var(--ring-color);
+  background: var(--btn-secondary-bg);
+}
+
+/* ====== 齿轮设置按钮 ====== */
+.btn-settings {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+  z-index: 10;
+}
+
+.btn-settings:hover {
+  color: var(--text-primary);
+  background: var(--btn-secondary-bg);
+}
+
+.btn-settings:active {
+  transform: scale(0.9);
+}
+
+/* ====== 设置面板 ====== */
+.settings-panel {
+  max-height: 200px;
+  opacity: 1;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.25s ease, margin 0.35s ease;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.settings-panel.hidden {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  gap: 12px;
+}
+
+.settings-row label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.settings-row input[type="number"] {
+  width: 70px;
+  padding: 6px 10px;
+  border: 1.5px solid #d5d8dc;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: var(--font);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  color: var(--text-primary);
+  background: #fff;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  -webkit-app-region: no-drag;
+}
+
+.settings-row input[type="number"]:focus {
+  outline: none;
+  border-color: var(--ring-color);
+  box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.15);
+}
+
+/* 去掉 number input 的 spinner 箭头（保持简洁） */
+.settings-row input[type="number"]::-webkit-inner-spin-button,
+.settings-row input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
