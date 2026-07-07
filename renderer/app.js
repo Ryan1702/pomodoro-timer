@@ -85,12 +85,22 @@ const el = {
   inputLongBreak: document.getElementById("inputLongBreak"),
   // 置顶按钮
   btnPin:       document.getElementById("btnPin"),
+  // 缩小按钮
+  btnCompact:   document.getElementById("btnCompact"),
+  iconCompactEnter: document.getElementById("iconCompactEnter"),
+  iconCompactExit:  document.getElementById("iconCompactExit"),
 };
 
 // --- 根据阶段更新 UI 主题 ---
 function applyPhaseTheme() {
+  // 保留 is-compact 类，只切换阶段主题类
   const phaseCls = { focus: "", shortBreak: "short-break", longBreak: "long-break" };
-  document.body.className = phaseCls[state.phase] || "";
+  const target = phaseCls[state.phase] || "";
+  // 移除所有阶段相关的类，但不影响 is-compact
+  document.body.classList.remove("short-break", "long-break");
+  if (target) {
+    document.body.classList.add(target);
+  }
   el.phaseLabel.textContent = PHASES.find((p) => p.name === state.phase).label;
 }
 
@@ -319,5 +329,37 @@ el.btnPin.addEventListener("click", async () => {
     } else {
       el.btnPin.classList.remove("is-pinned");
     }
+  }
+});
+
+// ====== 缩小按钮逻辑 ======
+let isCompact = false;
+
+// 启动时从主进程获取当前缩小状态
+(async function initCompactState() {
+  if (typeof window.pomodoroAPI !== "undefined" && window.pomodoroAPI.getIsCompact) {
+    isCompact = await window.pomodoroAPI.getIsCompact();
+    applyCompactUI();
+  }
+})();
+
+function applyCompactUI() {
+  if (isCompact) {
+    document.body.classList.add("is-compact");
+    el.iconCompactEnter.style.display = "none";
+    el.iconCompactExit.style.display = "";
+    el.btnCompact.title = "还原窗口";
+  } else {
+    document.body.classList.remove("is-compact");
+    el.iconCompactEnter.style.display = "";
+    el.iconCompactExit.style.display = "none";
+    el.btnCompact.title = "缩小窗口";
+  }
+}
+
+el.btnCompact.addEventListener("click", async () => {
+  if (typeof window.pomodoroAPI !== "undefined" && window.pomodoroAPI.toggleCompact) {
+    isCompact = await window.pomodoroAPI.toggleCompact();
+    applyCompactUI();
   }
 });

@@ -25,4 +25,20 @@ contextBridge.exposeInMainWorld("pomodoroAPI", {
   getAlwaysOnTop: () => {
     return ipcRenderer.invoke("get-always-on-top");
   },
+
+  /**
+   * 切换窗口缩小模式，返回切换后的状态
+   * @returns {Promise<boolean>}
+   */
+  toggleCompact: () => {
+    return ipcRenderer.invoke("toggle-compact");
+  },
+
+  /**
+   * 获取当前缩小模式状态
+   * @returns {Promise<boolean>}
+   */
+  getIsCompact: () => {
+    return ipcRenderer.invoke("get-is-compact");
+  },
 });
