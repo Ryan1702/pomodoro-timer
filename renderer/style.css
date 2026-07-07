@@ -86,7 +86,7 @@ body {
   position: relative;
   width: 220px;
   height: 220px;
-  margin-bottom: 28px;
+  margin-bottom: 16px;
 }
 
 .ring-svg {
@@ -111,7 +111,8 @@ body {
   display: flex;
   gap: 16px;
   align-items: center;
-  margin-bottom: 24px;
+  margin-top: 4px;
+  margin-bottom: 16px;
 }
 
 .btn {
@@ -174,14 +175,70 @@ body {
   opacity: 0.7;
 }
 
-/* ====== SVG 进度环 stroke-dasharray ====== */
-/* r=88 → 周长 = 2π×88 ≈ 552.92 */
+/* ====== 拖拽区按钮（通用） ====== */
+/* 按钮容器定位参照 drag-bar 的右边界 */
 
-/* ====== 置顶按钮 ====== */
+/* 齿轮设置按钮 — 置顶左边，间距 4px，整体右移一个按钮位置 */
+/* right = 4(置顶) + 30(宽) + 4(间距) = 38 */
+.btn-settings {
+  position: absolute;
+  top: 6px;
+  right: 38px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+  z-index: 10;
+}
+
+.btn-settings:hover {
+  color: var(--text-primary);
+  background: var(--btn-secondary-bg);
+}
+
+.btn-settings:active {
+  transform: scale(0.9);
+}
+
+/* 缩小按钮 — 往右挪一个按钮位置，部分超出右边界 */
+.btn-compact {
+  position: absolute;
+  top: 6px;
+  right: -30px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+  z-index: 10;
+}
+
+.btn-compact:hover {
+  color: var(--text-primary);
+  background: var(--btn-secondary-bg);
+}
+
+.btn-compact:active {
+  transform: scale(0.9);
+}
+
+/* 置顶按钮 — 缩小左边，间距 4px，整体右移一个按钮位置 */
+/* right = -30(缩小) + 30(宽) + 4(间距) = 4 */
 .btn-pin {
   position: absolute;
   top: 6px;
-  right: -34px;
+  right: 4px;
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -210,33 +267,6 @@ body {
   background: var(--btn-secondary-bg);
 }
 
-/* ====== 齿轮设置按钮 ====== */
-.btn-settings {
-  position: absolute;
-  top: 6px;
-  right: 0px;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;
-  z-index: 10;
-}
-
-.btn-settings:hover {
-  color: var(--text-primary);
-  background: var(--btn-secondary-bg);
-}
-
-.btn-settings:active {
-  transform: scale(0.9);
-}
-
 /* ====== 设置面板 ====== */
 .settings-panel {
   max-height: 200px;
@@ -252,6 +282,74 @@ body {
   opacity: 0;
   margin-top: 0;
   margin-bottom: 0;
+}
+
+/* ====== 缩小模式 ====== */
+body.is-compact {
+  -webkit-app-region: drag;
+}
+
+/* 按钮恢复 no-drag 才能点击 */
+body.is-compact .btn {
+  -webkit-app-region: no-drag;
+}
+
+body.is-compact .phase-label,
+body.is-compact .controls,
+body.is-compact .tomato-count,
+body.is-compact .settings-panel {
+  display: none;
+}
+
+/* 缩小模式下隐藏齿轮按钮 */
+body.is-compact .btn-settings {
+  display: none;
+}
+
+body.is-compact .timer-ring {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 0;
+}
+
+body.is-compact .timer-text {
+  font-size: 28px;
+}
+
+/* 内容偏上对齐，减少下方空白。窗口160px - hiddenInset≈28px = 132px */
+/* drag-bar(24) + ring(120) ≈ 144px, 超出约12px由flex-start裁剪底部 */
+body.is-compact .container {
+  padding: 0 16px;
+  padding-top: 4px;
+  justify-content: flex-start;
+}
+
+body.is-compact .drag-bar {
+  height: 24px;
+  flex-shrink: 0;
+}
+
+/* 缩小窗口 200px, container padding 0 16px → 内容区 168px */
+/* 两个按钮 24px, 间距 4px → 总宽 52px，整体右移半个按钮宽度 */
+body.is-compact .btn-compact,
+body.is-compact .btn-pin {
+  width: 24px;
+  height: 24px;
+  top: 4px;
+}
+
+body.is-compact .btn-compact {
+  right: -8px;
+}
+
+body.is-compact .btn-pin {
+  right: 20px;
+}
+
+body.is-compact .btn-compact svg,
+body.is-compact .btn-pin svg {
+  width: 14px;
+  height: 14px;
 }
 
 .settings-row {

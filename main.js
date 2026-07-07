@@ -2,6 +2,7 @@ const { app, BrowserWindow, Notification, ipcMain } = require("electron");
 const path = require("path");
 
 let mainWindow = null;
+let isCompact = false;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -45,6 +46,27 @@ ipcMain.handle("toggle-always-on-top", () => {
 // 获取当前置顶状态
 ipcMain.handle("get-always-on-top", () => {
   return mainWindow ? mainWindow.isAlwaysOnTop() : false;
+});
+
+// 切换缩小模式
+ipcMain.handle("toggle-compact", () => {
+  if (!mainWindow) return false;
+  isCompact = !isCompact;
+  if (isCompact) {
+    mainWindow.setMinimumSize(200, 160);
+    mainWindow.setSize(200, 160);
+  } else {
+    mainWindow.setMinimumSize(400, 650);
+    mainWindow.setSize(400, 650);
+  }
+  mainWindow.setResizable(false);
+  mainWindow.center();
+  return isCompact;
+});
+
+// 获取当前缩小状态
+ipcMain.handle("get-is-compact", () => {
+  return isCompact;
 });
 
 app.whenReady().then(createWindow);
