@@ -166,6 +166,7 @@ function switchPhase(nextPhase) {
   updateRing();
   updateCount();
   setPlayIcon(false);
+  updateSkipButtonState();
 
   // 发送系统通知
   const prevLabel = el.phaseLabel.textContent;
@@ -206,12 +207,76 @@ function pauseTimer() {
   state.timerId = null;
 }
 
+// --- 每日跳过次数管理 ---
+const SKIP_LIMIT_KEY = "dailySkipLimit";
+const MAX_SKIPS_PER_DAY = 3;
+
+function getTodayKey() {
+  const d = new Date();
+  // 本地日期字符串 YYYY-MM-DD，基于本地时区，凌晨0点自动切换
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+function loadSkipLimit() {
+  try {
+    const saved = localStorage.getItem(SKIP_LIMIT_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // 如果日期是今天，返回剩余次数；否则重置为最大值
+      if (parsed.date === getTodayKey()) {
+        return parsed.remaining;
+      }
+    }
+  } catch (_) { /* ignore */ }
+  return MAX_SKIPS_PER_DAY;
+}
+
+function saveSkipLimit(remaining) {
+  try {
+    localStorage.setItem(SKIP_LIMIT_KEY, JSON.stringify({
+      date: getTodayKey(),
+      remaining: remaining,
+    }));
+  } catch (_) { /* ignore */ }
+}
+
+let dailySkipRemaining = loadSkipLimit();
+
+function updateSkipButtonState() {
+  if (state.phase === "focus" && dailySkipRemaining <= 0) {
+    el.btnSkip.disabled = true;
+    el.btnSkip.title = "今日跳过次数已用完（凌晨0点刷新）";
+  } else if (state.phase === "focus") {
+    el.btnSkip.disabled = false;
+    el.btnSkip.title = `跳过（今日剩余 ${dailySkipRemaining} 次）`;
+  } else {
+    // 休息阶段无限跳过
+    el.btnSkip.disabled = false;
+    el.btnSkip.title = "跳过";
+  }
+}
+
 // --- 跳过当前阶段 ---
 function skipPhase() {
+  // 专注阶段检查每日跳过次数
+  if (state.phase === "focus") {
+    // 每天凌晨自动刷新（loadSkipLimit 已处理日期变更）
+    const fresh = loadSkipLimit();
+    if (fresh !== dailySkipRemaining) {
+      dailySkipRemaining = fresh;
+    }
+    if (dailySkipRemaining <= 0) {
+      return; // 无跳过次数，不执行
+    }
+    dailySkipRemaining--;
+    saveSkipLimit(dailySkipRemaining);
+  }
+
   clearInterval(state.timerId);
   state.timerId = null;
   const next = getNextPhase();
   switchPhase(next);
+  updateSkipButtonState();
 }
 
 // --- 重置整个周期 ---
@@ -230,6 +295,7 @@ function resetAll() {
   updateRing();
   updateCount();
   setPlayIcon(false);
+  updateSkipButtonState();
 }
 
 // --- 事件绑定 ---

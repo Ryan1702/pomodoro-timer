@@ -155,6 +155,15 @@ body {
   background: var(--btn-secondary-hover);
 }
 
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn:disabled:active {
+  transform: none;
+}
+
 /* ====== 番茄计数 ====== */
 .tomato-count {
   display: flex;
