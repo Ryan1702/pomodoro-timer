@@ -1,5 +1,52 @@
 // ====== 番茄钟核心逻辑 ======
 
+// --- 主题商城 ---
+const THEMES = [
+  { id: "classic",  name: "经典番茄", swatch: "#e74c3c" },
+  { id: "ocean",    name: "海风青",   swatch: "#008b8b" },
+  { id: "forest",   name: "森林暖阳", swatch: "#b87a2e" },
+  { id: "sunset",   name: "晚霞珊瑚", swatch: "#e07b6c" },
+  { id: "lavender", name: "薰衣草紫", swatch: "#8e44ad" },
+  { id: "graphite", name: "石墨灰",   swatch: "#2c3e50" },
+];
+
+let currentTheme = "classic";
+try {
+  const saved = localStorage.getItem("pomodoroTheme");
+  if (saved && THEMES.find(t => t.id === saved)) {
+    currentTheme = saved;
+  }
+} catch (_) {}
+document.body.classList.add("theme-" + currentTheme);
+
+function switchTheme(themeId) {
+  if (themeId === currentTheme) return;
+  document.body.classList.remove("theme-" + currentTheme);
+  currentTheme = themeId;
+  document.body.classList.add("theme-" + currentTheme);
+  // 更新卡片激活状态
+  document.querySelectorAll(".theme-card").forEach(card => {
+    card.classList.toggle("active", card.dataset.theme === themeId);
+  });
+  // 持久化
+  try { localStorage.setItem("pomodoroTheme", themeId); } catch (_) {}
+}
+
+function buildThemeCards() {
+  const grid = document.getElementById("themeGrid");
+  THEMES.forEach(theme => {
+    const card = document.createElement("div");
+    card.className = "theme-card" + (theme.id === currentTheme ? " active" : "");
+    card.dataset.theme = theme.id;
+    card.innerHTML = `
+      <div class="theme-swatch" style="background:${theme.swatch}"></div>
+      <span class="theme-name">${theme.name}</span>
+    `;
+    card.addEventListener("click", () => switchTheme(theme.id));
+    grid.appendChild(card);
+  });
+}
+
 // --- 配置 ---
 const DEFAULT_CONFIG = {
   focus: 25,       // 25 分钟专注
@@ -104,6 +151,9 @@ const el = {
   inputFocus:   document.getElementById("inputFocus"),
   inputShortBreak: document.getElementById("inputShortBreak"),
   inputLongBreak: document.getElementById("inputLongBreak"),
+  // 主题商城
+  btnStore:     document.getElementById("btnStore"),
+  storePanel:   document.getElementById("storePanel"),
   // 置顶按钮
   btnPin:       document.getElementById("btnPin"),
   // 缩小按钮
@@ -346,6 +396,16 @@ updateCount();
 updateLifetimeCount();
 setPlayIcon(false);
 updateSkipButtonState();
+buildThemeCards();
+
+// ====== 主题商城面板逻辑 ======
+el.btnStore.addEventListener("click", () => {
+  // 如果设置面板打开，先关闭
+  if (!el.settingsPanel.classList.contains("hidden")) {
+    el.settingsPanel.classList.add("hidden");
+  }
+  el.storePanel.classList.toggle("hidden");
+});
 
 // ====== 设置面板逻辑 ======
 
@@ -359,6 +419,10 @@ syncInputsToConfig();
 
 // 切换设置面板显示
 el.btnSettings.addEventListener("click", () => {
+  // 如果商城面板打开，先关闭
+  if (!el.storePanel.classList.contains("hidden")) {
+    el.storePanel.classList.add("hidden");
+  }
   el.settingsPanel.classList.toggle("hidden");
 });
 

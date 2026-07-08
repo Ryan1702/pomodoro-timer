@@ -1,15 +1,15 @@
 /* ====== CSS 变量 / 主题 ====== */
 :root {
-  --ring-bg: #e8e8e8;
+  --ring-bg: #d7dadd;
   --ring-color: #e74c3c;
   --text-primary: #2c3e50;
-  --text-secondary: #7f8c8d;
+  --text-secondary: #54626b;
   --bg: #fafafa;
   --btn-primary-bg: #e74c3c;
   --btn-primary-hover: #c0392b;
   --btn-secondary-bg: #ecf0f1;
-  --btn-secondary-hover: #dfe4e6;
-  --btn-text: #fff;
+  --btn-secondary-hover: #d1d7db;
+  --btn-text: #ffffff;
   --btn-secondary-text: #2c3e50;
   --radius: 12px;
   --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC",
@@ -28,6 +28,140 @@ body.short-break {
   --ring-color: #27ae60;
   --btn-primary-bg: #27ae60;
   --btn-primary-hover: #219a52;
+}
+
+/* ====== 主题风格 ====== */
+/* 经典番茄（默认）— 继承 :root，无需额外声明 */
+
+/* 海风青 */
+body.theme-ocean {
+  --ring-bg: #acc6c2;
+  --ring-color: #008b8b;
+  --text-primary: #1a3c3a;
+  --text-secondary: #3d6b66;
+  --bg: #f2f9f8;
+  --btn-primary-bg: #008b8b;
+  --btn-primary-hover: #006f6f;
+  --btn-secondary-bg: #d4efed;
+  --btn-secondary-hover: #b7dfdb;
+  --btn-text: #ffffff;
+  --btn-secondary-text: #1a3c3a;
+}
+
+body.theme-ocean.short-break {
+  --ring-color: #27ae60;
+  --btn-primary-bg: #27ae60;
+  --btn-primary-hover: #219a52;
+}
+
+body.theme-ocean.long-break {
+  --ring-color: #3498db;
+  --btn-primary-bg: #3498db;
+  --btn-primary-hover: #2980b9;
+}
+
+/* 森林暖阳 */
+body.theme-forest {
+  --ring-bg: #ecdac4;
+  --ring-color: #b87a2e;
+  --text-primary: #3d2a13;
+  --text-secondary: #6b4f33;
+  --bg: #fdf8f2;
+  --btn-primary-bg: #b87a2e;
+  --btn-primary-hover: #9a6422;
+  --btn-secondary-bg: #f7e5d2;
+  --btn-secondary-hover: #edd1b5;
+  --btn-text: #ffffff;
+  --btn-secondary-text: #3d2a13;
+}
+
+body.theme-forest.short-break {
+  --ring-color: #27ae60;
+  --btn-primary-bg: #27ae60;
+  --btn-primary-hover: #219a52;
+}
+
+body.theme-forest.long-break {
+  --ring-color: #3498db;
+  --btn-primary-bg: #3498db;
+  --btn-primary-hover: #2980b9;
+}
+
+/* 晚霞珊瑚 */
+body.theme-sunset {
+  --ring-bg: #f3d8d1;
+  --ring-color: #e07b6c;
+  --text-primary: #3d2520;
+  --text-secondary: #7a5048;
+  --bg: #fef9f7;
+  --btn-primary-bg: #e07b6c;
+  --btn-primary-hover: #c95e50;
+  --btn-secondary-bg: #fbe5de;
+  --btn-secondary-hover: #f3cec3;
+  --btn-text: #ffffff;
+  --btn-secondary-text: #3d2520;
+}
+
+body.theme-sunset.short-break {
+  --ring-color: #27ae60;
+  --btn-primary-bg: #27ae60;
+  --btn-primary-hover: #219a52;
+}
+
+body.theme-sunset.long-break {
+  --ring-color: #3498db;
+  --btn-primary-bg: #3498db;
+  --btn-primary-hover: #2980b9;
+}
+
+/* 薰衣草紫 */
+body.theme-lavender {
+  --ring-bg: #d9c1e4;
+  --ring-color: #8e44ad;
+  --text-primary: #2a1a3a;
+  --text-secondary: #7d5d8c;
+  --bg: #faf5fc;
+  --btn-primary-bg: #8e44ad;
+  --btn-primary-hover: #6c3483;
+  --btn-secondary-bg: #ecddf2;
+  --btn-secondary-hover: #ddc8e7;
+}
+
+body.theme-lavender.short-break {
+  --ring-color: #27ae60;
+  --btn-primary-bg: #27ae60;
+  --btn-primary-hover: #219a52;
+}
+
+body.theme-lavender.long-break {
+  --ring-color: #2980b9;
+  --btn-primary-bg: #2980b9;
+  --btn-primary-hover: #1a6fa0;
+}
+
+/* 石墨灰 */
+body.theme-graphite {
+  --ring-bg: #c8cbd0;
+  --ring-color: #2c3e50;
+  --text-primary: #1a1a1a;
+  --text-secondary: #5d6d7e;
+  --bg: #f0f1f2;
+  --btn-primary-bg: #2c3e50;
+  --btn-primary-hover: #1a252f;
+  --btn-secondary-bg: #e0e2e5;
+  --btn-secondary-hover: #d0d3d8;
+}
+
+body.theme-graphite.short-break {
+  --ring-color: #27ae60;
+  --btn-primary-bg: #27ae60;
+  --btn-primary-hover: #219a52;
+}
+
+body.theme-graphite.long-break {
+  --ring-color: #3498db;
+  --btn-primary-bg: #3498db;
+  --btn-primary-hover: #2980b9;
 }
 
 /* ====== 全局 ====== */
@@ -208,6 +342,34 @@ body {
 /* ====== 拖拽区按钮（通用） ====== */
 /* 按钮容器定位参照 drag-bar 的右边界 */
 
+/* 主题商城按钮 — 设置左边，间距 4px */
+/* right = 38(设置) + 30(宽) + 4(间距) = 72 */
+.btn-store {
+  position: absolute;
+  top: 6px;
+  right: 72px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+  z-index: 10;
+}
+
+.btn-store:hover {
+  color: var(--text-primary);
+  background: var(--btn-secondary-bg);
+}
+
+.btn-store:active {
+  transform: scale(0.9);
+}
+
 /* 齿轮设置按钮 — 置顶左边，间距 4px，整体右移一个按钮位置 */
 /* right = 4(置顶) + 30(宽) + 4(间距) = 38 */
 .btn-settings {
@@ -314,6 +476,67 @@ body {
   margin-bottom: 0;
 }
 
+/* ====== 主题商城面板 ====== */
+.store-panel {
+  max-height: 350px;
+  opacity: 1;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.25s ease, margin 0.35s ease;
+  margin-top: 8px;
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.store-panel.hidden {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.theme-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.theme-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.theme-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  background: #fff;
+}
+
+.theme-card.active {
+  border-color: var(--ring-color);
+  background: #fff;
+}
+
+.theme-swatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.theme-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
 /* ====== 缩小模式 ====== */
 body.is-compact {
   -webkit-app-region: drag;
@@ -334,6 +557,15 @@ body.is-compact .settings-panel {
 
 /* 缩小模式下隐藏齿轮按钮 */
 body.is-compact .btn-settings {
+  display: none;
+}
+
+/* 缩小模式下隐藏商城按钮 */
+body.is-compact .btn-store {
+  display: none;
+}
+
+body.is-compact .store-panel {
   display: none;
 }
 
