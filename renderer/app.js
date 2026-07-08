@@ -65,6 +65,26 @@ let state = {
   timerId: null,              // setInterval id
 };
 
+// --- 永久番茄计数（不会被 reset 清零）---
+let lifetimeCount = 0;
+try {
+  const saved = localStorage.getItem("lifetimePomodoroCount");
+  if (saved) {
+    const n = parseInt(saved, 10);
+    if (!isNaN(n) && n >= 0) lifetimeCount = n;
+  }
+} catch (_) {}
+
+function saveLifetimeCount() {
+  try {
+    localStorage.setItem("lifetimePomodoroCount", String(lifetimeCount));
+  } catch (_) {}
+}
+
+function updateLifetimeCount() {
+  el.lifetimeText.textContent = String(lifetimeCount);
+}
+
 // --- DOM 元素 ---
 const el = {
   phaseLabel:   document.getElementById("phaseLabel"),
@@ -77,6 +97,7 @@ const el = {
   iconPause:    document.getElementById("iconPause"),
   countText:    document.getElementById("countText"),
   sessionHint:  document.getElementById("sessionHint"),
+  lifetimeText: document.getElementById("lifetimeText"),
   // 设置面板
   btnSettings:  document.getElementById("btnSettings"),
   settingsPanel: document.getElementById("settingsPanel"),
@@ -140,6 +161,9 @@ function getPhaseConfig() {
 function getNextPhase() {
   if (state.phase === "focus") {
     state.pomodoroCount++;
+    lifetimeCount++;
+    saveLifetimeCount();
+    updateLifetimeCount();
     // 每完成 CONFIG.longBreakInterval 个番茄，进入长休息
     if (state.pomodoroCount % CONFIG.longBreakInterval === 0) {
       return "longBreak";
@@ -319,6 +343,7 @@ el.btnReset.addEventListener("click", () => {
 applyPhaseTheme();
 updateRing();
 updateCount();
+updateLifetimeCount();
 setPlayIcon(false);
 updateSkipButtonState();
 
