@@ -128,6 +128,7 @@ function updateCount() {
 function setPlayIcon(isRunning) {
   el.iconPlay.style.display = isRunning ? "none" : "";
   el.iconPause.style.display = isRunning ? "" : "none";
+  el.btnStartPause.title = isRunning ? "暂停" : "开始";
 }
 
 // --- 获取当前阶段的配置 ---
