@@ -320,6 +320,7 @@ applyPhaseTheme();
 updateRing();
 updateCount();
 setPlayIcon(false);
+updateSkipButtonState();
 
 // ====== 设置面板逻辑 ======
 
