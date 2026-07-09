@@ -2,18 +2,30 @@
 
 // --- 主题商城 ---
 const THEMES = [
+  // 第1页 — 经典六款
   { id: "classic",  name: "经典番茄", swatch: "#e74c3c" },
   { id: "ocean",    name: "海风青",   swatch: "#008b8b" },
-  { id: "forest",   name: "森林暖阳", swatch: "#b87a2e" },
-  { id: "sunset",   name: "晚霞珊瑚", swatch: "#e07b6c" },
+  { id: "forest",   name: "樱花粉",   swatch: "#e88d9c" },
+  { id: "sunset",   name: "落日金",   swatch: "#d49b17" },
   { id: "lavender", name: "薰衣草紫", swatch: "#8e44ad" },
   { id: "graphite", name: "石墨灰",   swatch: "#2c3e50" },
+  // 第2页 — 六款新主题
+  { id: "spring-bud",  name: "春日嫩芽", swatch: "#2ecc71" },
+  { id: "mint-fresh",  name: "薄荷冰泉", swatch: "#00b894" },
+  { id: "aurora",      name: "极光幻境", swatch: "#6c5ce7" },
+  { id: "peach-bloom", name: "桃气满满", swatch: "#fd79a8" },
+  { id: "midnight",    name: "午夜星辰", swatch: "#1e3799" },
+  { id: "lava-sunset", name: "落日熔岩", swatch: "#c0392b" },
 ];
 
 let currentTheme = "classic";
 try {
   const saved = localStorage.getItem("pomodoroTheme");
-  if (saved && THEMES.find(t => t.id === saved)) {
+  // 兼容旧主题ID "amber-glow" → 替换为 "spring-bud"
+  if (saved === "amber-glow") {
+    currentTheme = "spring-bud";
+    localStorage.setItem("pomodoroTheme", "spring-bud");
+  } else if (saved && THEMES.find(t => t.id === saved)) {
     currentTheme = saved;
   }
 } catch (_) {}
@@ -28,13 +40,60 @@ function switchTheme(themeId) {
   document.querySelectorAll(".theme-card").forEach(card => {
     card.classList.toggle("active", card.dataset.theme === themeId);
   });
+  // 更新进度环渐变（有渐变则用渐变，无则用纯色 CSS 变量）
+  updateRingGradient(themeId);
   // 持久化
   try { localStorage.setItem("pomodoroTheme", themeId); } catch (_) {}
 }
 
+// 主题渐变映射（新6款用渐变环，经典6款用纯色环）
+const THEME_GRADIENTS = {
+  "spring-bud":  ["#f6d93e", "#2ecc71"],
+  "mint-fresh":  ["#00b894", "#0984e3"],
+  "aurora":      ["#00cec9", "#a29bfe"],
+  "peach-bloom": ["#fd79a8", "#fab1a0"],
+  "midnight":    ["#1e3799", "#8e44ad"],
+  "lava-sunset": ["#c0392b", "#f1c40f"],
+};
+
+function updateRingGradient(themeId) {
+  const defs = document.getElementById("ringGradients");
+  if (!defs) return;
+  const colors = THEME_GRADIENTS[themeId];
+  if (colors) {
+    // 渐变主题：注入 linearGradient
+    defs.innerHTML = `
+      <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+        <stop offset="0%" stop-color="${colors[0]}"/>
+        <stop offset="100%" stop-color="${colors[1]}"/>
+      </linearGradient>
+    `;
+    // 根据当前阶段选择 stroke：专注=渐变，休息=纯色
+    if (state.phase === "focus") {
+      el.progressRing.setAttribute("stroke", "url(#ringGrad)");
+    } else if (state.phase === "shortBreak") {
+      el.progressRing.setAttribute("stroke", "#27ae60");
+    } else if (state.phase === "longBreak") {
+      el.progressRing.setAttribute("stroke", "#3498db");
+    }
+  } else {
+    // 非渐变主题：始终使用 CSS 变量
+    defs.innerHTML = "";
+    el.progressRing.setAttribute("stroke", "var(--ring-color)");
+  }
+}
+const CARDS_PER_PAGE = 6;
+let themePage = 0; // 当前页码
+
 function buildThemeCards() {
   const grid = document.getElementById("themeGrid");
-  THEMES.forEach(theme => {
+  const totalPages = Math.ceil(THEMES.length / CARDS_PER_PAGE);
+  const start = themePage * CARDS_PER_PAGE;
+  const pageThemes = THEMES.slice(start, start + CARDS_PER_PAGE);
+
+  // 清空并重建当前页卡片
+  grid.innerHTML = "";
+  pageThemes.forEach(theme => {
     const card = document.createElement("div");
     card.className = "theme-card" + (theme.id === currentTheme ? " active" : "");
     card.dataset.theme = theme.id;
@@ -45,6 +104,14 @@ function buildThemeCards() {
     card.addEventListener("click", () => switchTheme(theme.id));
     grid.appendChild(card);
   });
+
+  // 更新翻页按钮状态
+  updatePagerButtons(totalPages);
+}
+
+function goThemePage(delta) {
+  themePage += delta;
+  buildThemeCards();
 }
 
 // --- 配置 ---
@@ -112,24 +179,31 @@ let state = {
   timerId: null,              // setInterval id
 };
 
-// --- 永久番茄计数（不会被 reset 清零）---
-let lifetimeCount = 0;
+// --- 永久统计（不会被 reset 清零）---
+// lifetimeMinutes: 总专注分钟数（仅正常计时结束累加，跳过不计）
+// lifetimeCoins: 总金币数 = 总专注分钟数（1分钟=1金币）
+let lifetimeMinutes = 0;
+let lifetimeCoins = 0;
 try {
-  const saved = localStorage.getItem("lifetimePomodoroCount");
+  const saved = localStorage.getItem("lifetimeStats");
   if (saved) {
-    const n = parseInt(saved, 10);
-    if (!isNaN(n) && n >= 0) lifetimeCount = n;
+    const parsed = JSON.parse(saved);
+    if (typeof parsed.minutes === "number" && parsed.minutes >= 0) lifetimeMinutes = parsed.minutes;
+    if (typeof parsed.coins === "number" && parsed.coins >= 0) lifetimeCoins = parsed.coins;
   }
 } catch (_) {}
 
-function saveLifetimeCount() {
+function saveLifetimeStats() {
   try {
-    localStorage.setItem("lifetimePomodoroCount", String(lifetimeCount));
+    localStorage.setItem("lifetimeStats", JSON.stringify({
+      minutes: lifetimeMinutes,
+      coins: lifetimeCoins,
+    }));
   } catch (_) {}
 }
 
-function updateLifetimeCount() {
-  el.lifetimeText.textContent = String(lifetimeCount);
+function updateLifetimeStats() {
+  el.lifetimeText.textContent = `总共专注：${lifetimeMinutes}分钟 | 🪙 ${lifetimeCoins}`;
 }
 
 // --- DOM 元素 ---
@@ -173,6 +247,17 @@ function applyPhaseTheme() {
     document.body.classList.add(target);
   }
   el.phaseLabel.textContent = PHASES.find((p) => p.name === state.phase).label;
+
+  // 渐变主题：专注阶段用渐变，休息阶段用纯色（与经典番茄一致）
+  if (THEME_GRADIENTS[currentTheme]) {
+    if (state.phase === "focus") {
+      el.progressRing.setAttribute("stroke", "url(#ringGrad)");
+    } else if (state.phase === "shortBreak") {
+      el.progressRing.setAttribute("stroke", "#27ae60");
+    } else if (state.phase === "longBreak") {
+      el.progressRing.setAttribute("stroke", "#3498db");
+    }
+  }
 }
 
 // --- 格式化时间 ---
@@ -208,12 +293,17 @@ function getPhaseConfig() {
 }
 
 // --- 确定下一阶段 ---
-function getNextPhase() {
+// skipped: true 表示跳过（不累加统计），false/undefined 表示正常计时结束
+function getNextPhase(skipped) {
   if (state.phase === "focus") {
     state.pomodoroCount++;
-    lifetimeCount++;
-    saveLifetimeCount();
-    updateLifetimeCount();
+    // 只有正常计时结束（非跳过）才累加分钟数和金币数
+    if (!skipped) {
+      lifetimeMinutes += CONFIG.focus;
+      lifetimeCoins += CONFIG.focus; // 1分钟 = 1金币
+      saveLifetimeStats();
+      updateLifetimeStats();
+    }
     // 每完成 CONFIG.longBreakInterval 个番茄，进入长休息
     if (state.pomodoroCount % CONFIG.longBreakInterval === 0) {
       return "longBreak";
@@ -266,7 +356,7 @@ function startTimer() {
       // 时间到，切换阶段
       clearInterval(state.timerId);
       state.timerId = null;
-      const next = getNextPhase();
+      const next = getNextPhase(false); // 正常结束，累加统计
       switchPhase(next);
     }
   }, 1000);
@@ -348,7 +438,7 @@ function skipPhase() {
 
   clearInterval(state.timerId);
   state.timerId = null;
-  const next = getNextPhase();
+  const next = getNextPhase(true); // 跳过，不累加统计
   switchPhase(next);
   updateSkipButtonState();
 }
@@ -393,10 +483,11 @@ el.btnReset.addEventListener("click", () => {
 applyPhaseTheme();
 updateRing();
 updateCount();
-updateLifetimeCount();
+updateLifetimeStats();
 setPlayIcon(false);
 updateSkipButtonState();
 buildThemeCards();
+updateRingGradient(currentTheme); // 启动时同步渐变环
 
 // ====== 主题商城面板逻辑 ======
 el.btnStore.addEventListener("click", () => {
@@ -404,8 +495,55 @@ el.btnStore.addEventListener("click", () => {
   if (!el.settingsPanel.classList.contains("hidden")) {
     el.settingsPanel.classList.add("hidden");
   }
+  const opening = el.storePanel.classList.contains("hidden");
   el.storePanel.classList.toggle("hidden");
+  // 打开时重置到当前主题所在页
+  if (opening) {
+    const idx = THEMES.findIndex(t => t.id === currentTheme);
+    themePage = Math.floor(idx / CARDS_PER_PAGE);
+    buildThemeCards();
+  }
 });
+
+// 创建翻页按钮并添加到 storePanel 底部
+(function initPager() {
+  const pager = document.createElement("div");
+  pager.className = "theme-pager";
+  pager.id = "themePager";
+  pager.innerHTML = `
+    <button class="btn-pager" id="btnPagePrev" title="上一页">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+    <span class="pager-info" id="pagerInfo">1/2</span>
+    <button class="btn-pager" id="btnPageNext" title="下一页">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+  `;
+  el.storePanel.appendChild(pager);
+
+  document.getElementById("btnPagePrev").addEventListener("click", () => {
+    if (themePage > 0) goThemePage(-1);
+  });
+  document.getElementById("btnPageNext").addEventListener("click", () => {
+    const totalPages = Math.ceil(THEMES.length / CARDS_PER_PAGE);
+    if (themePage < totalPages - 1) goThemePage(1);
+  });
+})();
+
+function updatePagerButtons(totalPages) {
+  const prevBtn = document.getElementById("btnPagePrev");
+  const nextBtn = document.getElementById("btnPageNext");
+  const info = document.getElementById("pagerInfo");
+  if (!prevBtn || !nextBtn || !info) return;
+
+  prevBtn.disabled = themePage === 0;
+  nextBtn.disabled = themePage >= totalPages - 1;
+  info.textContent = `${themePage + 1}/${totalPages}`;
+}
 
 // ====== 设置面板逻辑 ======
 

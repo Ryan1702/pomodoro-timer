@@ -31,6 +31,15 @@
           <line x1="21" y1="3" x2="15" y2="9" />
         </svg>
       </button>
+      <!-- 主题商城按钮 -->
+      <button class="btn btn-store" id="btnStore" title="主题商城">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M12 2a10 10 0 0 1 0 20"/>
+          <path d="M12 2a10 10 0 0 0 0 20"/>
+          <circle cx="12" cy="12" r="3" fill="currentColor"/>
+        </svg>
+      </button>
       <!-- 齿轮设置按钮 -->
       <button class="btn btn-settings btn-normal-only" id="btnSettings" title="设置">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -54,6 +63,9 @@
     <!-- 环形进度条 + 倒计时 -->
     <div class="timer-ring">
       <svg viewBox="0 0 200 200" class="ring-svg">
+        <defs id="ringGradients">
+          <!-- JS 动态注入渐变色定义 -->
+        </defs>
         <!-- 背景圆环 -->
         <circle
           cx="100" cy="100" r="88"
@@ -109,11 +121,9 @@
       <span class="session-hint" id="sessionHint">第 1 轮</span>
     </div>
 
-    <!-- 永久番茄计数（不被重置清零） -->
+    <!-- 永久统计：总专注分钟数 + 金币数 -->
     <div class="lifetime-count" id="lifetimeCount">
-      <span class="lifetime-label">已拥有🍅：</span>
-      <span id="lifetimeText">0</span>
-      <span class="lifetime-unit">个</span>
+      <span id="lifetimeText">总共专注：0分钟 | 🪙 0</span>
     </div>
 
     <!-- 设置面板 -->
@@ -129,6 +139,13 @@
       <div class="settings-row">
         <label for="inputLongBreak">长休息（分钟）</label>
         <input type="number" id="inputLongBreak" min="1" max="120" value="15" />
+      </div>
+    </div>
+
+    <!-- 主题商城面板 -->
+    <div class="store-panel hidden" id="storePanel">
+      <div class="theme-grid" id="themeGrid">
+        <!-- JS 动态生成主题卡片 -->
       </div>
     </div>
   </div>

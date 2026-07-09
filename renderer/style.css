@@ -60,19 +60,19 @@ body.theme-ocean.long-break {
   --btn-primary-hover: #2980b9;
 }
 
-/* 森林暖阳 */
+/* 樱花粉 */
 body.theme-forest {
-  --ring-bg: #ecdac4;
-  --ring-color: #b87a2e;
-  --text-primary: #3d2a13;
-  --text-secondary: #6b4f33;
-  --bg: #fdf8f2;
-  --btn-primary-bg: #b87a2e;
-  --btn-primary-hover: #9a6422;
-  --btn-secondary-bg: #f7e5d2;
-  --btn-secondary-hover: #edd1b5;
+  --ring-bg: #f0d7de;
+  --ring-color: #e88d9c;
+  --text-primary: #3d2028;
+  --text-secondary: #7a4d58;
+  --bg: #fef9fa;
+  --btn-primary-bg: #e88d9c;
+  --btn-primary-hover: #c97382;
+  --btn-secondary-bg: #f7e4e8;
+  --btn-secondary-hover: #f0ced5;
   --btn-text: #ffffff;
-  --btn-secondary-text: #3d2a13;
+  --btn-secondary-text: #3d2028;
 }
 
 body.theme-forest.short-break {
@@ -87,19 +87,19 @@ body.theme-forest.long-break {
   --btn-primary-hover: #2980b9;
 }
 
-/* 晚霞珊瑚 */
+/* 落日金 */
 body.theme-sunset {
-  --ring-bg: #f3d8d1;
-  --ring-color: #e07b6c;
-  --text-primary: #3d2520;
-  --text-secondary: #7a5048;
-  --bg: #fef9f7;
-  --btn-primary-bg: #e07b6c;
-  --btn-primary-hover: #c95e50;
-  --btn-secondary-bg: #fbe5de;
-  --btn-secondary-hover: #f3cec3;
+  --ring-bg: #f2e4cb;
+  --ring-color: #d49b17;
+  --text-primary: #3d2e14;
+  --text-secondary: #6b5935;
+  --bg: #fdfaf3;
+  --btn-primary-bg: #d49b17;
+  --btn-primary-hover: #b27e12;
+  --btn-secondary-bg: #f9efdb;
+  --btn-secondary-hover: #f0dfbb;
   --btn-text: #ffffff;
-  --btn-secondary-text: #3d2520;
+  --btn-secondary-text: #3d2e14;
 }
 
 body.theme-sunset.short-break {
@@ -134,9 +134,9 @@ body.theme-lavender.short-break {
 }
 
 body.theme-lavender.long-break {
-  --ring-color: #2980b9;
-  --btn-primary-bg: #2980b9;
-  --btn-primary-hover: #1a6fa0;
+  --ring-color: #3498db;
+  --btn-primary-bg: #3498db;
+  --btn-primary-hover: #2980b9;
 }
 
 /* 石墨灰 */
@@ -159,6 +159,168 @@ body.theme-graphite.short-break {
 }
 
 body.theme-graphite.long-break {
+  --ring-color: #3498db;
+  --btn-primary-bg: #3498db;
+  --btn-primary-hover: #2980b9;
+}
+
+/* 春日嫩芽 */
+body.theme-spring-bud {
+  --ring-bg: #e5ecd2;
+  --ring-color: #f6d93e;
+  --text-primary: #2b3518;
+  --text-secondary: #5c6b3e;
+  --bg: #fafcf5;
+  --btn-primary-bg: #2ecc71;
+  --btn-primary-hover: #27ae60;
+  --btn-secondary-bg: #eef4e2;
+  --btn-secondary-hover: #ddebc6;
+  --btn-text: #ffffff;
+  --btn-secondary-text: #2b3518;
+}
+
+body.theme-spring-bud.short-break {
+  --ring-color: #27ae60;
+  --btn-primary-bg: #27ae60;
+  --btn-primary-hover: #219a52;
+}
+
+body.theme-spring-bud.long-break {
+  --ring-color: #3498db;
+  --btn-primary-bg: #3498db;
+  --btn-primary-hover: #2980b9;
+}
+
+/* 薄荷冰泉 */
+body.theme-mint-fresh {
+  --ring-bg: #c4e3e0;
+  --ring-color: #00b894;
+  --text-primary: #142b32;
+  --text-secondary: #3f6068;
+  --bg: #f3faf9;
+  --btn-primary-bg: #00b894;
+  --btn-primary-hover: #009b7d;
+  --btn-secondary-bg: #d2f0ea;
+  --btn-secondary-hover: #b4e2d9;
+  --btn-text: #ffffff;
+  --btn-secondary-text: #142b32;
+}
+
+body.theme-mint-fresh.short-break {
+  --ring-color: #27ae60;
+  --btn-primary-bg: #27ae60;
+  --btn-primary-hover: #219a52;
+}
+
+body.theme-mint-fresh.long-break {
+  --ring-color: #3498db;
+  --btn-primary-bg: #3498db;
+  --btn-primary-hover: #2980b9;
+}
+
+/* 极光幻境 */
+body.theme-aurora {
+  --ring-bg: #d4d6e8;
+  --ring-color: #00cec9;
+  --text-primary: #1f1d3a;
+  --text-secondary: #4e4c6e;
+  --bg: #f5f4fc;
+  --btn-primary-bg: #6c5ce7;
+  --btn-primary-hover: #5849c4;
+  --btn-secondary-bg: #e4e1f5;
+  --btn-secondary-hover: #cec9eb;
+  --btn-text: #ffffff;
+  --btn-secondary-text: #1f1d3a;
+}
+
+body.theme-aurora.short-break {
+  --ring-color: #27ae60;
+  --btn-primary-bg: #27ae60;
+  --btn-primary-hover: #219a52;
+}
+
+body.theme-aurora.long-break {
+  --ring-color: #3498db;
+  --btn-primary-bg: #3498db;
+  --btn-primary-hover: #2980b9;
+}
+
+/* 桃气满满 */
+body.theme-peach-bloom {
+  --ring-bg: #f2d8dc;
+  --ring-color: #fd79a8;
+  --text-primary: #3d1e24;
+  --text-secondary: #6e444c;
+  --bg: #fef8f9;
+  --btn-primary-bg: #fd79a8;
+  --btn-primary-hover: #e0648c;
+  --btn-secondary-bg: #fce4e8;
+  --btn-secondary-hover: #f7cdd4;
+  --btn-text: #ffffff;
+  --btn-secondary-text: #3d1e24;
+}
+
+body.theme-peach-bloom.short-break {
+  --ring-color: #27ae60;
+  --btn-primary-bg: #27ae60;
+  --btn-primary-hover: #219a52;
+}
+
+body.theme-peach-bloom.long-break {
+  --ring-color: #3498db;
+  --btn-primary-bg: #3498db;
+  --btn-primary-hover: #2980b9;
+}
+
+/* 午夜星辰 */
+body.theme-midnight {
+  --ring-bg: #c8ccdc;
+  --ring-color: #1e3799;
+  --text-primary: #161b33;
+  --text-secondary: #4a506b;
+  --bg: #f0f1f6;
+  --btn-primary-bg: #1e3799;
+  --btn-primary-hover: #162a7a;
+  --btn-secondary-bg: #dfe1ec;
+  --btn-secondary-hover: #c5c8da;
+  --btn-text: #ffffff;
+  --btn-secondary-text: #161b33;
+}
+
+body.theme-midnight.short-break {
+  --ring-color: #27ae60;
+  --btn-primary-bg: #27ae60;
+  --btn-primary-hover: #219a52;
+}
+
+body.theme-midnight.long-break {
+  --ring-color: #3498db;
+  --btn-primary-bg: #3498db;
+  --btn-primary-hover: #2980b9;
+}
+
+/* 落日熔岩 */
+body.theme-lava-sunset {
+  --ring-bg: #efd4bf;
+  --ring-color: #c0392b;
+  --text-primary: #3d1e0c;
+  --text-secondary: #6b4030;
+  --bg: #fef8f4;
+  --btn-primary-bg: #c0392b;
+  --btn-primary-hover: #9b2920;
+  --btn-secondary-bg: #fbe5d5;
+  --btn-secondary-hover: #f3cfb2;
+  --btn-text: #ffffff;
+  --btn-secondary-text: #3d1e0c;
+}
+
+body.theme-lava-sunset.short-break {
+  --ring-color: #27ae60;
+  --btn-primary-bg: #27ae60;
+  --btn-primary-hover: #219a52;
+}
+
+body.theme-lava-sunset.long-break {
   --ring-color: #3498db;
   --btn-primary-bg: #3498db;
   --btn-primary-hover: #2980b9;
@@ -318,25 +480,16 @@ body {
   opacity: 0.7;
 }
 
-/* ====== 永久番茄计数 ====== */
+/* ====== 永久统计（总专注分钟 + 金币） ====== */
 .lifetime-count {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2px;
   font-size: 13px;
   color: var(--text-secondary);
   opacity: 0.55;
   margin-top: 2px;
   margin-bottom: 2px;
-}
-
-.lifetime-label {
-  font-weight: 400;
-}
-
-.lifetime-unit {
-  font-size: 14px;
 }
 
 /* ====== 拖拽区按钮（通用） ====== */
@@ -476,14 +629,14 @@ body {
   margin-bottom: 0;
 }
 
-/* ====== 主题商城面板 ====== */
+/* ====== 主题商城主面板 ====== */
 .store-panel {
-  max-height: 350px;
+  max-height: 320px;
   opacity: 1;
   overflow: hidden;
   transition: max-height 0.35s ease, opacity 0.25s ease, margin 0.35s ease;
-  margin-top: 8px;
-  margin-bottom: 10px;
+  margin-top: 6px;
+  margin-bottom: 4px;
   width: 100%;
 }
 
@@ -497,15 +650,15 @@ body {
 .theme-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  padding: 4px 0;
+  gap: 6px;
+  padding: 2px 0;
 }
 
 .theme-card {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
+  gap: 8px;
+  padding: 8px 10px;
   border-radius: 10px;
   border: 2px solid transparent;
   background: rgba(255, 255, 255, 0.7);
@@ -535,6 +688,55 @@ body {
   font-size: 13px;
   font-weight: 500;
   color: var(--text-primary);
+}
+
+/* ====== 主题翻页按钮 ====== */
+.theme-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+  padding-bottom: 2px;
+}
+
+.btn-pager {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--btn-secondary-bg);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  -webkit-app-region: no-drag;
+}
+
+.btn-pager:hover:not(:disabled) {
+  background: var(--btn-secondary-bg);
+  color: var(--text-primary);
+  border-color: var(--text-secondary);
+}
+
+.btn-pager:active:not(:disabled) {
+  transform: scale(0.9);
+}
+
+.btn-pager:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.pager-info {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  min-width: 28px;
+  text-align: center;
+  user-select: none;
 }
 
 /* ====== 缩小模式 ====== */
