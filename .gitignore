@@ -1,4 +1,20 @@
+# 依赖
 node_modules/
+
+# 构建产物
+dist/
+
+# 系统文件
 .DS_Store
+Thumbs.db
+
+# 日志
 *.log
-恢复跳过额度.command
+
+# Claude Code 相关
+CLAUDE.md
+.claude/
+
+# Shell 脚本 / 快捷启动
+*.command
+*.sh

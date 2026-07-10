@@ -41,4 +41,30 @@ contextBridge.exposeInMainWorld("pomodoroAPI", {
   getIsCompact: () => {
     return ipcRenderer.invoke("get-is-compact");
   },
+
+  /**
+   * 添加金币
+   * @param {number} amount 要添加的金币数量
+   * @returns {Promise<{success: boolean, oldCoins?: number, newCoins?: number, error?: string}>}
+   */
+  addCoins: (amount) => {
+    return ipcRenderer.invoke("add-coins", amount);
+  },
+
+  /**
+   * 查询当前金币
+   * @returns {Promise<{success: boolean, coins?: number, minutes?: number, error?: string}>}
+   */
+  getCoins: () => {
+    return ipcRenderer.invoke("get-coins");
+  },
+
+  /**
+   * 检查金币信号文件（由 command 脚本写入）
+   * 渲染进程定期轮询此方法以接收添加金币指令
+   * @returns {Promise<{found: boolean, amount?: number, error?: string}>}
+   */
+  checkCoinsSignal: () => {
+    return ipcRenderer.invoke("check-coins-signal");
+  },
 });

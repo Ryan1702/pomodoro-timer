@@ -859,3 +859,76 @@ body.is-compact .btn-pin svg {
   -webkit-appearance: none;
   margin: 0;
 }
+
+/* ====== 主题锁定卡片 ====== */
+.theme-card.locked {
+  cursor: pointer;
+  opacity: 0.75;
+  background: rgba(255, 255, 255, 0.45);
+  border: 2px dashed rgba(0, 0, 0, 0.12);
+}
+
+.theme-card.locked:hover {
+  opacity: 0.9;
+  background: rgba(255, 255, 255, 0.7);
+  border-color: var(--ring-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.theme-lock-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+  height: 32px; /* 固定高度确保锁定/解锁卡片完全一致（两行: 16px + 2px gap + 14px = 32px） */
+}
+
+.theme-price {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+.theme-price.unaffordable {
+  color: #e74c3c;
+  opacity: 0.65;
+}
+
+.lock-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+/* 解锁卡片右侧的勾选图标（与锁图标位置对称，保持卡片高度一致） */
+.theme-check-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ring-color);
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+/* 金币不足抖动动画 */
+.theme-card.insufficient {
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}

@@ -3,20 +3,46 @@
 // --- 主题商城 ---
 const THEMES = [
   // 第1页 — 经典六款
-  { id: "classic",  name: "经典番茄", swatch: "#e74c3c" },
-  { id: "ocean",    name: "海风青",   swatch: "#008b8b" },
-  { id: "forest",   name: "樱花粉",   swatch: "#e88d9c" },
-  { id: "sunset",   name: "落日金",   swatch: "#d49b17" },
-  { id: "lavender", name: "薰衣草紫", swatch: "#8e44ad" },
-  { id: "graphite", name: "石墨灰",   swatch: "#2c3e50" },
+  { id: "classic",  name: "经典番茄", swatch: "#e74c3c", price: 0    },
+  { id: "ocean",    name: "海风青",   swatch: "#008b8b", price: 500  },
+  { id: "forest",   name: "樱花粉",   swatch: "#e88d9c", price: 500  },
+  { id: "sunset",   name: "落日金",   swatch: "#d49b17", price: 500  },
+  { id: "lavender", name: "薰衣草紫", swatch: "#8e44ad", price: 500  },
+  { id: "graphite", name: "石墨灰",   swatch: "#2c3e50", price: 500  },
   // 第2页 — 六款新主题
-  { id: "spring-bud",  name: "春日嫩芽", swatch: "#2ecc71" },
-  { id: "mint-fresh",  name: "薄荷冰泉", swatch: "#00b894" },
-  { id: "aurora",      name: "极光幻境", swatch: "#6c5ce7" },
-  { id: "peach-bloom", name: "桃气满满", swatch: "#fd79a8" },
-  { id: "midnight",    name: "午夜星辰", swatch: "#1e3799" },
-  { id: "lava-sunset", name: "落日熔岩", swatch: "#c0392b" },
+  { id: "spring-bud",  name: "春日嫩芽", swatch: "#2ecc71", price: 2000 },
+  { id: "mint-fresh",  name: "薄荷冰泉", swatch: "#00b894", price: 2000 },
+  { id: "aurora",      name: "极光幻境", swatch: "#6c5ce7", price: 2000 },
+  { id: "peach-bloom", name: "桃气满满", swatch: "#fd79a8", price: 2000 },
+  { id: "midnight",    name: "午夜星辰", swatch: "#1e3799", price: 2000 },
+  { id: "lava-sunset", name: "落日熔岩", swatch: "#c0392b", price: 2000 },
 ];
+
+// --- 主题解锁管理 ---
+let unlockedThemes = loadUnlockedThemes();
+
+function loadUnlockedThemes() {
+  try {
+    const saved = localStorage.getItem("unlockedThemes");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) {
+        const valid = parsed.filter(id => THEMES.find(t => t.id === id));
+        if (!valid.includes("classic")) valid.push("classic");
+        return valid;
+      }
+    }
+  } catch (_) {}
+  return ["classic"];
+}
+
+function saveUnlockedThemes(list) {
+  try { localStorage.setItem("unlockedThemes", JSON.stringify(list)); } catch (_) {}
+}
+
+function isThemeUnlocked(themeId) {
+  return unlockedThemes.includes(themeId);
+}
 
 let currentTheme = "classic";
 try {
@@ -26,12 +52,16 @@ try {
     currentTheme = "spring-bud";
     localStorage.setItem("pomodoroTheme", "spring-bud");
   } else if (saved && THEMES.find(t => t.id === saved)) {
-    currentTheme = saved;
+    // 检查保存的主题是否已解锁，未解锁则回退 classic
+    if (isThemeUnlocked(saved)) {
+      currentTheme = saved;
+    }
   }
 } catch (_) {}
 document.body.classList.add("theme-" + currentTheme);
 
 function switchTheme(themeId) {
+  if (!isThemeUnlocked(themeId)) return; // 未解锁主题不能切换
   if (themeId === currentTheme) return;
   document.body.classList.remove("theme-" + currentTheme);
   currentTheme = themeId;
@@ -82,6 +112,60 @@ function updateRingGradient(themeId) {
     el.progressRing.setAttribute("stroke", "var(--ring-color)");
   }
 }
+
+// --- 主题购买 ---
+function buyTheme(themeId) {
+  const theme = THEMES.find(t => t.id === themeId);
+  if (!theme) return false;
+  if (isThemeUnlocked(themeId)) return true; // 已解锁无需再买
+  if (lifetimeCoins < theme.price) return false; // 金币不足
+
+  // 扣除金币
+  lifetimeCoins -= theme.price;
+  saveLifetimeStats();
+  updateLifetimeStats();
+
+  // 加入解锁列表
+  unlockedThemes.push(themeId);
+  saveUnlockedThemes(unlockedThemes);
+  return true;
+}
+
+function handleThemeCardClick(themeId) {
+  if (isThemeUnlocked(themeId)) {
+    switchTheme(themeId);
+    return;
+  }
+
+  const theme = THEMES.find(t => t.id === themeId);
+  if (!theme) return;
+
+  if (lifetimeCoins < theme.price) {
+    // 金币不足：抖动反馈
+    const card = document.querySelector(`.theme-card[data-theme="${themeId}"]`);
+    if (card) {
+      card.classList.add("insufficient");
+      card.addEventListener("animationend", () => {
+        card.classList.remove("insufficient");
+      }, { once: true });
+    }
+    return;
+  }
+
+  // 确认购买
+  const confirmed = confirm(
+    `解锁「${theme.name}」主题需要 ${theme.price} 🪙 金币\n` +
+    `当前金币：${lifetimeCoins} 🪙\n\n确认购买吗？`
+  );
+  if (!confirmed) return;
+
+  const success = buyTheme(theme.id);
+  if (success) {
+    switchTheme(theme.id);
+    buildThemeCards(); // 刷新当前页卡片状态
+  }
+}
+
 const CARDS_PER_PAGE = 6;
 let themePage = 0; // 当前页码
 
@@ -91,21 +175,48 @@ function buildThemeCards() {
   const start = themePage * CARDS_PER_PAGE;
   const pageThemes = THEMES.slice(start, start + CARDS_PER_PAGE);
 
-  // 清空并重建当前页卡片
   grid.innerHTML = "";
   pageThemes.forEach(theme => {
+    const unlocked = isThemeUnlocked(theme.id);
     const card = document.createElement("div");
-    card.className = "theme-card" + (theme.id === currentTheme ? " active" : "");
+    card.className = "theme-card";
     card.dataset.theme = theme.id;
-    card.innerHTML = `
-      <div class="theme-swatch" style="background:${theme.swatch}"></div>
-      <span class="theme-name">${theme.name}</span>
-    `;
-    card.addEventListener("click", () => switchTheme(theme.id));
+
+    if (unlocked) {
+      if (theme.id === currentTheme) card.classList.add("active");
+      card.innerHTML = `
+        <div class="theme-swatch" style="background:${theme.swatch}"></div>
+        <div class="theme-lock-info">
+          <span class="theme-name">${theme.name}</span>
+        </div>
+        <div class="theme-check-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+      `;
+    } else {
+      card.classList.add("locked");
+      const canAfford = lifetimeCoins >= theme.price;
+      card.innerHTML = `
+        <div class="theme-swatch" style="background:${theme.swatch}"></div>
+        <div class="theme-lock-info">
+          <span class="theme-name">${theme.name}</span>
+          <span class="theme-price ${canAfford ? '' : 'unaffordable'}">🪙 ${theme.price}</span>
+        </div>
+        <div class="lock-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+        </div>
+      `;
+    }
+
+    card.addEventListener("click", () => handleThemeCardClick(theme.id));
     grid.appendChild(card);
   });
 
-  // 更新翻页按钮状态
   updatePagerButtons(totalPages);
 }
 
@@ -205,6 +316,28 @@ function saveLifetimeStats() {
 function updateLifetimeStats() {
   el.lifetimeText.textContent = `总共专注：${lifetimeMinutes}分钟 | 🪙 ${lifetimeCoins}`;
 }
+
+// --- 金币信号文件监听（接收来自 command 脚本的添加金币指令）---
+// 通过主进程 IPC 读取和删除信号文件
+async function processCoinsSignal() {
+  if (typeof window.pomodoroAPI === "undefined" || !window.pomodoroAPI.checkCoinsSignal) return;
+  try {
+    const result = await window.pomodoroAPI.checkCoinsSignal();
+    if (result && result.found && result.amount > 0) {
+      const oldCoins = lifetimeCoins;
+      lifetimeCoins += result.amount;
+      saveLifetimeStats();
+      updateLifetimeStats();
+      console.log(`💰 金币信号处理完成：${oldCoins} → ${lifetimeCoins} (+${result.amount})`);
+    }
+  } catch (_) {}
+}
+
+// 启动时立即检查一次
+processCoinsSignal();
+
+// 每 3 秒轮询检查（用于应用运行时收到 command 脚本指令）
+setInterval(processCoinsSignal, 3000);
 
 // --- DOM 元素 ---
 const el = {
